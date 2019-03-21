@@ -140,12 +140,12 @@ int16_t getCrc(int16_t *data)
     uint16_t i=0;
     uint8_t crc = 0;
 
-    while(data[i]!=NULL)
+    while(data[i]>=0)
     {
-        crc = crc ^ (data[i] & 0xff);
+        crc = crc ^ (data[i]);
         i++;
     }
-    return crc;
+    return crc  & 0xff;
 }
 
 //Проверить CRC
@@ -154,10 +154,9 @@ uint8_t checkCrc(uint8_t *data)
     uint16_t i=0;
     uint8_t crc = 0;
 
-    while(data[i+1]!=NULL)
+    for(i =0; i<data[5]+10-1; i++ )
     {
-        crc = crc ^ (data[i] & 0xff);
-        i++;
+        crc = crc ^ (data[i]);
     }
     return crc == data[i];
 }

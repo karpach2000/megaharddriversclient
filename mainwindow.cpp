@@ -35,12 +35,12 @@ void MainWindow::on_pushButton_clicked()
     ui->label->setText(line);
 
 
-    uint8_t data2[] = {0x01, 0x00, 0x00 , 0x00, 0x00, 0x07, 0x12, 0x34, 0x03, 0x02 , 0x04 , 0x06 , 0x08 , 0x10 , 0x12, 0x02, 0x01};
+    uint8_t data2[] = {0x01, 0x00, 0x00 , 0x00, 0x00, 0x07, 0x12, 0x34, 0x03, 0x02 , 0x04 , 0x06 , 0x08 , 0x10 , 0x12, 0x02, 0x2b};
 
     uint8_t check = checkMessageIn(data2);
     ui->label_3->setText("Check result "+QString::number(check));
     uint16_t commandIn = setMessageIn(data2);
-    ui->label_3->setText("Check result "+QString::number(check, 16)+ " Comand: " + QString::number(commandIn, 16)+"  "+QString::number(data2[data2[5]+10-2]));
+    ui->label_3->setText("Check result "+QString::number(check, 16)+ " Comand: " + QString::number(commandIn, 16));
     int16_t *messageData2= getDataIn();
 
     i=0;
