@@ -4,6 +4,9 @@
 #define stx 0x01
 #define str 0x02
 #define mir 0x03
+
+#define minLenth 10
+
 int16_t messageOut[0xFF], messageIn[0xff];
 uint8_t devAdres[] = {0, 0, 0, 0};
 
@@ -34,7 +37,7 @@ uint8_t checkMessageIn(uint8_t *data)
         return 0;
     }
     //проверяем стартовый и стоповые байты
-    else if(data[0] != stx || data[data[5]+10-2] != str)
+    else if(data[0] != stx || data[data[5]+minLenth-2] != str)
     {
         return 0;
     }
@@ -58,7 +61,7 @@ uint16_t setMessageIn(uint8_t *data)
     comandIn = comandIn<<8;
     comandIn = data[7] | comandIn;
     int j=0;
-    for(int i =8; i<data[5]+10-2; i++ )
+    for(int i =8; i<data[5]+minLenth-2; i++ )
     {
         if(data[i] != mir)
         {
@@ -80,10 +83,18 @@ int16_t* getDataIn()
     return dataIn;
 }
 
+//Получить ссылку на ходящую команду.
+
+uint16_t getComandIn()
+{
+    return comandIn;
+}
+
+
 //_____________Исходящие_______________//
 
 //Сгенерировать изходящее сообщение.
-int16_t* generateMessageOut(uint16_t command ,int16_t *data)
+int16_t* generateMessageOut(uint16_t command ,uint8_t *data, uint8_t dataLenth)
 {
     cleanMessageOut();
     messageOut[0] = stx;
@@ -96,7 +107,7 @@ int16_t* generateMessageOut(uint16_t command ,int16_t *data)
     messageOut[7] = command & 0xff;
     uint16_t i =0;
     int16_t lenth = 0;
-    while(data[i]>=0)
+    while(i < dataLenth)
     {
         if(data[i] == stx || data[i] == str || data[i] == mir)
         {
