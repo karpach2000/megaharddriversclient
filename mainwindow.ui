@@ -76,7 +76,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>02, 04, 06, 08, 10, 12</string>
+     <string>02 04 06 08 10 12</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEditComandOut">
