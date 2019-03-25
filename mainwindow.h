@@ -22,6 +22,8 @@ private slots:
     void genMes();
     void parseMes();
 
+    void on_pushButtonSendMessage_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

@@ -5,6 +5,8 @@
 #include "QStringList"
 #include "messageparser.h"
 #include <stdint.h>
+#include <QSerialPort>
+#include <QSerialPortInfo>
 
 QString getHexLineArray(int16_t *data);
 
@@ -40,7 +42,6 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::genMes()
 {
-    Engineer engineer;
     bool ok;
     QStringList comandTextList = ui->lineEditComandOut->text().split(" ");
     uint16_t command = (comandTextList[0]+comandTextList[1]).toUInt(&ok, 16);
@@ -96,4 +97,53 @@ QString getHexLineArray(int16_t *data)
         i++;
     }
     return line;
+}
+
+void MainWindow::on_pushButtonSendMessage_clicked()
+{
+    QSerialPort serial;
+    serial->setPortName("/dev/ttyUSB0");
+    serial->setBaudRate(QSerialPort::Baud9600);
+    serial->setDataBits(QSerialPort::Data8);
+    serial->setParity(QSerialPort::NoParity);
+    serial->setStopBits(QSerialPort::OneStop);
+    serial->setFlowControl(QSerialPort::NoFlowControl);
+    if (serial->open(QIODevice::ReadWrite)) {
+
+        showStatusMessage("Connectedd");
+
+    } else {
+
+        showStatusMessage(tr("Open error"));
+    }
+
+    bool ok;
+    QStringList comandTextList = ui->lineEditComandOut->text().split(" ");
+    uint16_t command = (comandTextList[0]+comandTextList[1]).toUInt(&ok, 16);
+
+    QStringList dataTextList = ui->lineEditDataOut->text().split(" ");
+    uint8_t data[dataTextList.length()];
+    for(uint16_t i = 0; i< dataTextList.length(); i++)
+    {
+        data[i] = dataTextList[i].toUInt(&ok, 16);
+
+    }
+    int16_t *messageData=generateMessageOut(command, data, dataTextList.length());
+    QByteArray sending;
+    for(int i=0; i<dataTextList.length(); i++ )
+    {
+        sending.append(messageData[i]);
+    }
+    serial->write(sending);
+    QByteArray dataRead = serial->readAll();
+    QString lineRX="";
+    for(int i=0; i<dataRead.length(); i++ )
+    {
+        lineRX=lineRX+" "+dataRead.number(i);
+    }
+
+    serial->close();
+     ui->label_2->setText(lineRX);
+
+
 }

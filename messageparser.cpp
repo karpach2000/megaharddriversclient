@@ -1,6 +1,9 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "messageparser.h"
+#include <QSerialPort>
+#include <QSerialPortInfo>
+
 #define stx 0x01
 #define str 0x02
 #define mir 0x03
